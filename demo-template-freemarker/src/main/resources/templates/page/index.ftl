@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app" style="margin: 20px 20%">
+    欢迎登录，${user.name}！
+</div>
+</body>
+</html>

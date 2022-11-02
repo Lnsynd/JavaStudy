@@ -1,0 +1,25 @@
+server:
+  port:
+    8080
+spring:
+  mail:
+    host: smtp.163.com
+    password: LELLJEPRSMFVEHYW
+    username: 18435375345@163.com
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/book_manage?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+  redis:
+    host: localhost
+  mvc:
+    pathmatch:
+       match-strategy : ant_path_matcher
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+logging:
+  level:
+    root: info
