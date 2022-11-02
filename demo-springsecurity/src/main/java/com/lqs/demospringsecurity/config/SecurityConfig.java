@@ -1,5 +1,6 @@
 package com.lqs.demospringsecurity.config;
 
+import com.lqs.demospringsecurity.filter.JwtAuthenticationTokenFilter;
 import com.lqs.demospringsecurity.utils.RedisCache;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
 
@@ -23,10 +25,12 @@ import javax.annotation.Resource;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -41,6 +45,9 @@ public class SecurityConfig {
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
+        //把token校验过滤器添加到过滤器链中
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -48,10 +55,9 @@ public class SecurityConfig {
     private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception{
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
         return authenticationManager;
     }
-
 
 }
