@@ -50,7 +50,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
 //        4、封装Authentication
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser, null, null);
+                new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
 
 //        5、存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
