@@ -32,7 +32,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         wrapper.eq(User::getUserName,s);
         User user = userMapper.selectOne(wrapper);
 
-
         List<String> perms = menuMapper.selectPermsByUserId(user.getId());
 
         if(Objects.isNull(user)){

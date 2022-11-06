@@ -1,6 +1,8 @@
 package com.lqs.demospringsecurity.config;
 
 import com.lqs.demospringsecurity.filter.JwtAuthenticationTokenFilter;
+import com.lqs.demospringsecurity.handler.AccessDeniedHandlerImpl;
+import com.lqs.demospringsecurity.handler.AuthenticationEntryPointImpl;
 import com.lqs.demospringsecurity.utils.RedisCache;
 
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -21,7 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.annotation.Resource;
 
+
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -31,6 +36,16 @@ public class SecurityConfig {
 
     @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    AuthenticationEntryPointImpl authenticationEntryPoint;
+
+    @Autowired
+    AccessDeniedHandlerImpl accessDeniedHandler;
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -45,14 +60,17 @@ public class SecurityConfig {
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 
-        //把token校验过滤器添加到过滤器链中
+        // 把token校验过滤器添加到过滤器链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        // 处理异常
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint);
 
         return http.build();
     }
 
-    @Autowired
-    private AuthenticationConfiguration authenticationConfiguration;
+
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception{
